@@ -1,6 +1,9 @@
 /* Write your T-SQL query statement below */ 
 
- 
+ /*
+Explaination
+
+*/
 
 select p.firstname,p.lastname,a.city, a.state from Person as p 
 
