@@ -1,0 +1,17 @@
+--Insert Data Query 
+
+INSERT INTO Employees (EmployeeName, Department, Salary, Bonus, TaxPercent)
+VALUES
+('Amit', 'IT', 60000, 5000, 10),
+('Rina', 'HR', 45000, 3000, 8),
+('Suresh', 'Sales', 55000, 7000, 12),
+('Neha', 'Finance', 70000, 10000, 15),
+('Karan', 'Sales', 40000, 4000, 5);
+
+INSERT INTO Sales (EmployeeID, SaleAmount, Quantity, DiscountPercent)
+VALUES
+(1, 20000, 5, 10),
+(2, 15000, 3, 5),
+(3, 30000, 10, 12),
+(3, 18000, 4, 8),
+(5, 10000, 2, 5);
