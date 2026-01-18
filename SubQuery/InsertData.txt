@@ -1,0 +1,25 @@
+--Departments
+INSERT INTO Departments VALUES
+(10, 'IT', 'Bangalore'),
+(20, 'HR', 'Mumbai'),
+(30, 'Finance', 'Delhi'),
+(40, 'Marketing', 'Pune');
+
+--Employees
+INSERT INTO Employees VALUES
+(1, 'Rahul', 10, 70000, '2020-01-10', NULL),
+(2, 'Anita', 20, 50000, '2019-03-15', 1),
+(3, 'Amit', 10, 60000, '2021-07-20', 1),
+(4, 'Neha', 30, 80000, '2018-05-11', NULL),
+(5, 'Ravi', 40, 45000, '2022-02-01', 4),
+(6, 'Pooja', 30, 75000, '2019-11-23', 4),
+(7, 'Karan', 10, 55000, '2023-04-10', 1),
+(8, 'Meena', 20, 48000, '2021-08-18', 2);
+
+--Projects
+INSERT INTO Projects VALUES
+(101, 'ERP Upgrade', 10, 1000000),
+(102, 'Recruitment Drive', 20, 200000),
+(103, 'Audit System', 30, 500000),
+(104, 'Ad Campaign', 40, 300000),
+(105, 'Cloud Migration', 10, 1200000);
