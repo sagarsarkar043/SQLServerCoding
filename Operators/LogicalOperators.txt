@@ -1,0 +1,70 @@
+
+--Logical Operators
+
+
+--Q1. Find employees who are in IT or Finance department (IN)
+SELECT EmployeeName, Department
+FROM Employees
+WHERE Department IN ('IT', 'Finance');
+
+--Q2. Find employees who are NOT in Sales or HR department (NOT + IN)
+SELECT EmployeeName, Department
+FROM Employees
+WHERE Department NOT IN ('Sales', 'HR');
+
+--Q3. Find employees whose name starts with 'N' (LIKE)
+SELECT EmployeeName
+FROM Employees
+WHERE EmployeeName LIKE 'N%';
+
+--Q4. Find employees whose name contains letter 'a' (LIKE)
+SELECT EmployeeName
+FROM Employees
+WHERE EmployeeName LIKE '%a%';
+
+--Q5. Find employees who work in Sales AND have salary greater than 45,000
+SELECT EmployeeName, Salary
+FROM Employees
+WHERE Department = 'Sales'
+  AND Salary > 45000;
+
+--Q6. Find employees who work in IT OR have bonus greater than 8,000
+SELECT EmployeeName, Department, Bonus
+FROM Employees
+WHERE Department = 'IT'
+   OR Bonus > 8000;
+
+--Q7. Find employees whose salary is greater than ALL salaries of HR department
+SELECT EmployeeName, Salary
+FROM Employees
+WHERE Salary > ALL (
+    SELECT Salary
+    FROM Employees
+    WHERE Department = 'HR'
+);
+
+
+--Q8. Find employees whose salary is greater than ANY salary of Sales department
+SELECT EmployeeName, Salary
+FROM Employees
+WHERE Salary > ANY (
+    SELECT Salary
+    FROM Employees
+    WHERE Department = 'Sales'
+);
+
+
+--Q9. Find sales where discount is 5% OR 10% AND quantity greater than 2
+
+--(AND has higher precedence)
+
+SELECT SaleID, DiscountPercent, Quantity
+FROM Sales
+WHERE DiscountPercent IN (5, 10)
+  AND Quantity > 2;
+
+--Q10. Find employees whose name does NOT end with 'a' and salary is less than 60,000
+SELECT EmployeeName, Salary
+FROM Employees
+WHERE EmployeeName NOT LIKE '%a'
+  AND Salary < 60000;
