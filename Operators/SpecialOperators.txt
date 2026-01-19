@@ -1,0 +1,66 @@
+--Special Operators
+
+--Q1. Find employees whose name starts with 'A' (LIKE)
+SELECT EmployeeName
+FROM Employees
+WHERE EmployeeName LIKE 'A%';
+
+--Q2. Find employees whose name ends with 'a' (LIKE)
+SELECT EmployeeName
+FROM Employees
+WHERE EmployeeName LIKE '%a';
+
+--Q3. Find employees working in IT, HR, or Finance (IN)
+SELECT EmployeeName, Department
+FROM Employees
+WHERE Department IN ('IT', 'HR', 'Finance');
+
+--Q4. Find employees NOT working in Sales department (NOT IN)
+SELECT EmployeeName, Department
+FROM Employees
+WHERE Department NOT IN ('Sales');
+
+--Q5. Find employees whose salary is between 45,000 and 65,000 (BETWEEN)
+SELECT EmployeeName, Salary
+FROM Employees
+WHERE Salary BETWEEN 45000 AND 65000;
+
+
+--Q6. Find sales where discount percentage is between 5 and 10
+SELECT SaleID, DiscountPercent
+FROM Sales
+WHERE DiscountPercent BETWEEN 5 AND 10;
+
+--Q7. Find employees whose bonus is NULL (IS NULL)
+
+
+SELECT EmployeeName, Bonus
+FROM Employees
+WHERE Bonus IS NULL;
+
+--Q8. Replace NULL bonus with 0 while displaying data (ISNULL)
+SELECT 
+    EmployeeName,
+    ISNULL(Bonus, 0) AS BonusAmount
+FROM Employees;
+
+--Q9. Find employees who have made at least one sale (EXISTS)
+SELECT EmployeeName
+FROM Employees E
+WHERE EXISTS (
+    SELECT 1
+    FROM Sales S
+    WHERE S.EmployeeID = E.EmployeeID
+);
+
+
+-- EXISTS stops scanning once a match is found → fast
+
+--Q10. Find employees who have NOT made any sales (NOT EXISTS)
+SELECT EmployeeName
+FROM Employees E
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Sales S
+    WHERE S.EmployeeID = E.EmployeeID
+);
