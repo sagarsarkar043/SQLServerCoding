@@ -1,0 +1,53 @@
+--WHERE Clause 
+
+--Q1. Find all Premium customers
+SELECT *
+FROM Customers
+WHERE CustomerType = 'Premium';
+
+--Q2. List customers from Mumbai with credit limit greater than 50,000
+SELECT CustomerName, CreditLimit
+FROM Customers
+WHERE City = 'Mumbai'
+  AND CreditLimit > 50000;
+
+--Q3. Find products priced between 5,000 and 30,000
+SELECT ProductName, Price
+FROM Products
+WHERE Price BETWEEN 5000 AND 30000;
+
+--Q4. Display orders with discount greater than 5%
+SELECT *
+FROM Orders
+WHERE DiscountPercent > 5;
+
+--Q5. Find orders placed in January 2025
+SELECT *
+FROM Orders
+WHERE OrderDate BETWEEN '2025-01-01' AND '2025-01-31';
+
+--Q6. Find customers who are NOT Premium
+SELECT CustomerName, CustomerType
+FROM Customers
+WHERE CustomerType <> 'Premium';
+
+--Q7. Find products belonging to Electronics or Furniture category
+SELECT ProductName, Category
+FROM Products
+WHERE Category IN ('Electronics', 'Furniture');
+
+--Q8. Find orders where quantity is more than 2 AND discount is at least 5%
+SELECT OrderID, Quantity, DiscountPercent
+FROM Orders
+WHERE Quantity > 2
+  AND DiscountPercent >= 5;
+
+--Q9. Find customers whose name starts with 'R'
+SELECT CustomerName
+FROM Customers
+WHERE CustomerName LIKE 'R%';
+
+--Q10. Find orders placed by customer with ID = 1
+SELECT *
+FROM Orders
+WHERE CustomerID = 1;
