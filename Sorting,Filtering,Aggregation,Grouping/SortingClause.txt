@@ -55,3 +55,124 @@ FROM Orders O
 JOIN Products P
     ON O.ProductID = P.ProductID
 ORDER BY TotalOrderValue DESC;
+
+--Order By Case
+
+--Q1. Sort customers so Premium customers appear first, then Regular
+SELECT CustomerName, CustomerType
+FROM Customers
+ORDER BY 
+    CASE 
+        WHEN CustomerType = 'Premium' THEN 1
+        ELSE 2
+    END;
+
+--Use case: CRM dashboards, loyalty prioritization
+
+--Q2. Sort products by business importance
+
+--Electronics → Furniture → Accessories
+
+SELECT ProductName, Category, Price
+FROM Products
+ORDER BY 
+    CASE Category
+        WHEN 'Electronics' THEN 1
+        WHEN 'Furniture' THEN 2
+        ELSE 3
+    END,
+    Price DESC;
+
+
+--Use case: Product catalog display
+
+--Q3. Sort orders by discount level
+
+--High (≥10%) → Medium (5–9%) → Low (<5%)
+
+SELECT OrderID, DiscountPercent
+FROM Orders
+ORDER BY 
+    CASE 
+        WHEN DiscountPercent >= 10 THEN 1
+        WHEN DiscountPercent BETWEEN 5 AND 9 THEN 2
+        ELSE 3
+    END;
+
+
+--Use case: Promotion effectiveness review
+
+--Q4. Sort customers by city priority
+
+--Mumbai → Delhi → Other cities
+
+SELECT CustomerName, City
+FROM Customers
+ORDER BY 
+    CASE 
+        WHEN City = 'Mumbai' THEN 1
+        WHEN City = 'Delhi' THEN 2
+        ELSE 3
+    END,
+    CustomerName;
+
+
+--Use case: Regional sales reporting
+
+--Q5. Sort orders prioritizing large quantity first, then latest orders
+
+SELECT OrderID, Quantity, OrderDate
+FROM Orders
+ORDER BY 
+    CASE 
+        WHEN Quantity >= 3 THEN 1
+        ELSE 2
+    END,
+    OrderDate DESC;
+
+--Order by - Top
+
+--Q1. Find the top 3 highest-priced products
+SELECT TOP 3 ProductName, Price
+FROM Products
+ORDER BY Price DESC;
+
+
+--Use case: Premium product listing
+
+--Q2. Display the 5 most recent orders
+SELECT TOP 5 OrderID, OrderDate
+FROM Orders
+ORDER BY OrderDate DESC;
+
+
+-- Use case: Order tracking dashboard
+
+--Q3. Find the top 3 customers with the highest credit limit
+SELECT TOP 3 CustomerName, CreditLimit
+FROM Customers
+ORDER BY CreditLimit DESC;
+
+--Use case: High-value customer identification
+
+--Q4. Show the top 3 orders by total order value
+
+--(Quantity × Price)
+
+SELECT TOP 3
+    O.OrderID,
+    P.ProductName,
+    (O.Quantity * P.Price) AS TotalOrderValue
+FROM Orders O
+JOIN Products P
+    ON O.ProductID = P.ProductID
+ORDER BY TotalOrderValue DESC;
+
+
+--Use case: Revenue contribution analysis
+
+--Q5. Get the top 2 orders with the highest discount
+
+SELECT TOP 2 OrderID, DiscountPercent
+FROM Orders
+ORDER BY DiscountPercent DESC;
