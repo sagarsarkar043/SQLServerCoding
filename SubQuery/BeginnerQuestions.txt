@@ -58,3 +58,55 @@ WHERE DeptID IN (
 
 Select * from Employees 
 where DeptID IN(Select DeptID from Projects where Budget>500000)
+
+--Q9-- Employees earning less than average salary 
+
+Select * from Employees;
+Select * from Departments;
+Select * from Projects;
+
+SELECT * 
+FROM Employees 
+WHERE Salary < ( 
+    SELECT AVG(Salary) 
+    FROM Employees 
+);
+
+--Q10--Employees working in Finance department
+
+Select * from Employees
+where DeptID =(Select DeptID from Departments where DeptName='Finance')
+
+--Q11--
+
+Select * from Employees;
+Select * from Departments;
+Select * from Projects;
+
+Select * from Departments
+where DeptID IN ((Select Distinct(DeptID) from Employees))
+
+--Q12--Employees whose salary equals maximum salary 
+
+Select * from Employees
+where salary=(Select Max(Salary) from Employees)
+
+--Q13--Employees not working in HR 
+
+Select * from Employees
+where DeptID <> (Select DeptID from Departments where DeptName='HR')
+
+--Q14--Employees earning more than Rahul 
+
+Select * from  Employees
+where Salary> (Select Salary from Employees where EmpName='Rahul')
+
+--Q15--Employees working in departments with more than one project
+
+Select * from Employees
+where DeptID IN (Select DeptID from Projects group by DeptID HAVING Count(*)>1)
+
+
+Select * from Employees;
+Select * from Departments;
+Select * from Projects;
