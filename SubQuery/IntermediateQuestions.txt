@@ -1,1 +1,10 @@
 
+--Q16--Employees earning more than department average
+
+SELECT * 
+FROM Employees e 
+WHERE Salary > ( 
+    SELECT AVG(Salary) 
+    FROM Employees 
+    WHERE DeptID = e.DeptID 
+); 
