@@ -1,0 +1,282 @@
+
+Create database Module7;
+
+use Module7;
+
+--Create Table
+
+--Create Tables
+CREATE TABLE Departments (
+    DepartmentID INT PRIMARY KEY,
+    DepartmentName VARCHAR(50),
+    Location VARCHAR(50)
+);
+
+CREATE TABLE Employees (
+    EmployeeID INT PRIMARY KEY,
+    EmployeeName VARCHAR(50),
+    ManagerID INT NULL,
+    DepartmentID INT,
+    Salary INT,
+    FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
+);
+
+CREATE TABLE Projects (
+    ProjectID INT PRIMARY KEY,
+    ProjectName VARCHAR(50),
+    DepartmentID INT,
+    FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
+);
+
+CREATE TABLE EmployeeProjects (
+    EmployeeID INT,
+    ProjectID INT,
+    HoursWorked INT,
+    PRIMARY KEY (EmployeeID, ProjectID),
+    FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID),
+    FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID)
+);
+
+--Insert Data
+
+--Insert Sample Data
+INSERT INTO Departments VALUES
+(1, 'HR', 'Delhi'),
+(2, 'IT', 'Bangalore'),
+(3, 'Finance', 'Mumbai'),
+(4, 'Marketing', 'Pune');
+
+INSERT INTO Employees VALUES
+(101, 'Amit', NULL, 2, 90000),
+(102, 'Neha', 101, 2, 70000),
+(103, 'Rahul', 101, 2, 65000),
+(104, 'Pooja', NULL, 1, 60000),
+(105, 'Karan', 104, 1, 50000),
+(106, 'Ravi', NULL, 3, 80000),
+(107, 'Sneha', 106, 3, 55000),
+(108, 'Anita', NULL, NULL, 40000);
+
+INSERT INTO Projects VALUES
+(201, 'Website Revamp', 2),
+(202, 'Payroll System', 1),
+(203, 'Audit Automation', 3),
+(204, 'Brand Campaign', 4);
+
+INSERT INTO EmployeeProjects VALUES
+(101, 201, 40),
+(102, 201, 30),
+(103, 201, 20),
+(104, 202, 25),
+(105, 202, 15),
+(106, 203, 35),
+(107, 203, 20);
+
+Select * from Employees;
+Select * from Projects;
+Select * from EmployeeProjects;
+Select * from Departments;
+
+
+--1. Show all employees with their department names
+SELECT e.EmployeeName, d.DepartmentName
+FROM Employees e
+INNER JOIN Departments d
+ON e.DepartmentID = d.DepartmentID;
+
+--2. List employees working in IT department
+SELECT e.EmployeeName
+FROM Employees e
+JOIN Departments d
+ON e.DepartmentID = d.DepartmentID
+WHERE d.DepartmentName = 'IT';
+
+--3.Show all departments even if no employees
+SELECT d.DepartmentName, e.EmployeeName
+FROM Departments d
+LEFT JOIN Employees e
+ON d.DepartmentID = e.DepartmentID;
+
+--4.List employees without department
+SELECT EmployeeName
+FROM Employees
+WHERE DepartmentID IS NULL;
+
+--5.Show all employees and their projects
+Select * from Employees;
+Select * from Projects;
+Select * from EmployeeProjects;
+Select * from Departments;
+
+SELECT e.EmployeeName, p.ProjectName
+FROM Employees e
+JOIN EmployeeProjects ep ON e.EmployeeID = ep.EmployeeID
+JOIN Projects p ON ep.ProjectID = p.ProjectID;
+
+--6.List projects with department name
+SELECT p.ProjectName, d.DepartmentName
+FROM Projects p
+JOIN Departments d
+ON p.DepartmentID = d.DepartmentID;
+
+--7.Employees earning more than 60k with department
+SELECT e.EmployeeName, d.DepartmentName, e.Salary
+FROM Employees e
+JOIN Departments d ON e.DepartmentID = d.DepartmentID
+WHERE e.Salary > 60000;
+
+--8.Count employees per department
+SELECT d.DepartmentName, COUNT(e.EmployeeID) AS EmpCount
+FROM Departments d
+LEFT JOIN Employees e
+ON d.DepartmentID = e.DepartmentID
+GROUP BY d.DepartmentName;
+
+--9.Show employee-project hours
+SELECT e.EmployeeName, p.ProjectName, ep.HoursWorked
+FROM EmployeeProjects ep
+JOIN Employees e ON ep.EmployeeID = e.EmployeeID
+JOIN Projects p ON ep.ProjectID = p.ProjectID;
+
+--10.Employees working on Website Revamp
+SELECT e.EmployeeName
+FROM Employees e
+JOIN EmployeeProjects ep ON e.EmployeeID = ep.EmployeeID
+JOIN Projects p ON ep.ProjectID = p.ProjectID
+WHERE p.ProjectName = 'Website Revamp';
+
+--11.Departments with no projects
+SELECT d.DepartmentName
+FROM Departments d
+LEFT JOIN Projects p
+ON d.DepartmentID = p.DepartmentID
+WHERE p.ProjectID IS NULL;
+
+--12. Employees with their manager ID
+SELECT EmployeeName, ManagerID
+FROM Employees;
+
+--13. Show all employees even if not assigned to projects
+SELECT e.EmployeeName, p.ProjectName
+FROM Employees e
+LEFT JOIN EmployeeProjects ep ON e.EmployeeID = ep.EmployeeID
+LEFT JOIN Projects p ON ep.ProjectID = p.ProjectID;
+
+--14. List all project names with employee count
+SELECT p.ProjectName, COUNT(ep.EmployeeID) AS EmpCount
+FROM Projects p
+LEFT JOIN EmployeeProjects ep ON p.ProjectID = ep.ProjectID
+GROUP BY p.ProjectName;
+
+--15. Show employees and department location
+SELECT e.EmployeeName, d.Location
+FROM Employees e
+JOIN Departments d ON e.DepartmentID = d.DepartmentID;
+
+--INTERMEDIATE LEVEL (10 Questions)
+--16. Employees with their manager name (Self Join)
+SELECT e.EmployeeName, m.EmployeeName AS ManagerName
+FROM Employees e
+LEFT JOIN Employees m
+ON e.ManagerID = m.EmployeeID;
+
+--17. Highest paid employee per department
+SELECT d.DepartmentName, e.EmployeeName, e.Salary
+FROM Employees e
+JOIN Departments d ON e.DepartmentID = d.DepartmentID
+WHERE e.Salary = (
+    SELECT MAX(Salary)
+    FROM Employees
+    WHERE DepartmentID = e.DepartmentID
+);
+
+--18. Employees working more than 30 hours
+SELECT e.EmployeeName, p.ProjectName, ep.HoursWorked
+FROM EmployeeProjects ep
+JOIN Employees e ON ep.EmployeeID = e.EmployeeID
+JOIN Projects p ON ep.ProjectID = p.ProjectID
+WHERE ep.HoursWorked > 30;
+
+--19. Department-wise total salary
+SELECT d.DepartmentName, SUM(e.Salary) AS TotalSalary
+FROM Departments d
+JOIN Employees e ON d.DepartmentID = e.DepartmentID
+GROUP BY d.DepartmentName;
+
+--20. Employees not assigned to any project
+SELECT e.EmployeeName
+FROM Employees e
+LEFT JOIN EmployeeProjects ep
+ON e.EmployeeID = ep.EmployeeID
+WHERE ep.EmployeeID IS NULL;
+
+--21. Project with maximum employees
+SELECT TOP 1 p.ProjectName, COUNT(ep.EmployeeID) AS EmpCount
+FROM Projects p
+JOIN EmployeeProjects ep ON p.ProjectID = ep.ProjectID
+GROUP BY p.ProjectName
+ORDER BY EmpCount DESC;
+
+--22. Employees and department only if department exists
+SELECT e.EmployeeName, d.DepartmentName
+FROM Employees e
+INNER JOIN Departments d
+ON e.DepartmentID = d.DepartmentID;
+
+--23. Department having more than 2 employees
+SELECT d.DepartmentName
+FROM Departments d
+JOIN Employees e ON d.DepartmentID = e.DepartmentID
+GROUP BY d.DepartmentName
+HAVING COUNT(*) > 2;
+
+--24. Employees who work in same department as Amit
+SELECT e.EmployeeName
+FROM Employees e
+JOIN Employees a
+ON e.DepartmentID = a.DepartmentID
+WHERE a.EmployeeName = 'Amit';
+
+--25. Employee count per location
+SELECT d.Location, COUNT(e.EmployeeID)
+FROM Departments d
+LEFT JOIN Employees e
+ON d.DepartmentID = e.DepartmentID
+GROUP BY d.Location;
+
+--ADVANCED LEVEL (5 Questions)
+--26. Employees earning more than department average
+SELECT e.EmployeeName, e.Salary
+FROM Employees e
+JOIN (
+    SELECT DepartmentID, AVG(Salary) AvgSal
+    FROM Employees
+    GROUP BY DepartmentID
+) d
+ON e.DepartmentID = d.DepartmentID
+WHERE e.Salary > d.AvgSal;
+
+--27. Employees working on multiple projects
+SELECT e.EmployeeName
+FROM Employees e
+JOIN EmployeeProjects ep ON e.EmployeeID = ep.EmployeeID
+GROUP BY e.EmployeeName
+HAVING COUNT(ep.ProjectID) > 1;
+
+--28. Department with highest total project hours
+SELECT TOP 1 d.DepartmentName, SUM(ep.HoursWorked) AS TotalHours
+FROM Departments d
+JOIN Projects p ON d.DepartmentID = p.DepartmentID
+JOIN EmployeeProjects ep ON p.ProjectID = ep.ProjectID
+GROUP BY d.DepartmentName
+ORDER BY TotalHours DESC;
+
+--29. Employees reporting to same manager
+SELECT m.EmployeeName AS Manager, COUNT(e.EmployeeID) AS TeamSize
+FROM Employees e
+JOIN Employees m ON e.ManagerID = m.EmployeeID
+GROUP BY m.EmployeeName;
+
+--30. Cross join: All employees with all projects
+SELECT e.EmployeeName, p.ProjectName
+FROM Employees e
+CROSS JOIN Projects p;
