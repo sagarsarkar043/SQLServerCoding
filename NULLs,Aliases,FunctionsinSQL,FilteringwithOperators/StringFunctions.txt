@@ -1,0 +1,134 @@
+--Create Tables
+
+CREATE TABLE PersonDetails (
+    PersonID INT IDENTITY(1,1) PRIMARY KEY,
+    FullName NVARCHAR(100),
+    Email NVARCHAR(100),
+    PhoneNumber NVARCHAR(50),
+    City NVARCHAR(50),
+    State NVARCHAR(50),
+    AddressLine NVARCHAR(200),
+    Department NVARCHAR(50),
+    Username NVARCHAR(50)
+);
+
+--Insert Data
+
+INSERT INTO PersonDetails 
+(FullName, Email, PhoneNumber, City, State, AddressLine, Department, Username)
+VALUES
+('  John   Doe  ', ' john.doe@company.com ', '+91-98765-43210', 'Bangalore', 'Karnataka', 'Flat 101, MG Road', 'IT', 'john_doe'),
+('Mary-Jane Smith', 'mary.smith@company.com', '(080)1234567', 'Mumbai', 'Maharashtra', '12/B Andheri East', 'HR', 'mary.smith'),
+('RAHUL KUMAR', 'rahul.kumar@company.com', '9876543210', 'Delhi', 'Delhi', 'House No 45, Rohini', 'Finance', 'rahul_k'),
+('Anita   Verma', 'anita.verma@company.com ', '+91 9988776655', 'Pune', 'Maharashtra', 'Apt-303 Baner Road', 'IT', 'anita_v'),
+('Robert Brown', 'robert.brown@company.com', '044-22334455', 'Chennai', 'Tamil Nadu', 'No.7, Anna Nagar', 'Operations', 'rbrown'),
+('Suresh@Reddy', 'suresh.reddy@company.com', '+91-9123456789', 'Hyderabad', 'Telangana', 'Plot#88 Jubilee Hills', 'Sales', 'suresh.reddy'),
+('Priya Sharma', 'priya.sharma@company.com', '91 9000011111', 'Jaipur', 'Rajasthan', 'Sector 5, Malviya Nagar', 'Marketing', 'priya_s'),
+('Amit Singh', ' amit.singh@company.com ', '+91(987)654-3211', 'Noida', 'Uttar Pradesh', 'Tower A, Sector 62', 'IT', 'amit.singh'),
+('Neha   Gupta', 'neha.gupta@company.com', '99999-88888', 'Gurgaon', 'Haryana', 'DLF Phase-3', 'HR', 'neha_g'),
+('Vikram Patel', 'vikram.patel@company.com', '+91 88888 77777', 'Ahmedabad', 'Gujarat', 'C.G Road, Navrangpura', 'Finance', 'vikram.p');
+
+Select * from PersonDetails;
+
+--LEN()
+--Problemn 1-Find the length of each employee’s full name 
+--(excluding trailing spaces).
+
+SELECT FullName, LEN(FullName) AS NameLength
+FROM PersonDetails;
+
+--CHARINDEX()
+--Problem 2-Find the position of '@' in employee email addresses.
+
+SELECT Email, CHARINDEX('@', Email) AS AtPosition
+FROM PersonDetails;
+
+
+--UPPER()
+--Problem 4-Convert department names to uppercase for reporting.
+
+SELECT Department, UPPER(Department) AS DeptUpper
+FROM PersonDetails;
+
+--CONCAT()
+--Problem 5-Create a display column combining name and city.
+
+
+SELECT CONCAT(TRIM(FullName), ' - ', City) AS DisplayName
+FROM PersonDetails;
+
+--LOWER()
+--Problem 7-Standardize emails to lowercase.
+
+
+SELECT LOWER(Email) AS CleanEmail
+FROM PersonDetails;
+
+--LEFT()
+--Problem 8--Extract first 4 characters of employee names.
+
+
+SELECT FullName, LEFT(TRIM(FullName),4) AS First4Chars
+FROM PersonDetails;
+
+--LTRIM()
+--Problem 9-Remove leading spaces from names.
+
+
+SELECT FullName, LTRIM(FullName) AS CleanName
+FROM PersonDetails;
+
+--REVERSE()
+--Problem 10--Reverse employee usernames for encryption testing.
+
+
+SELECT Username, REVERSE(Username) AS ReversedUsername
+FROM PersonDetails;
+
+--RIGHT()
+--Problem 11- Extract last 4 digits of phone numbers.
+
+
+SELECT PhoneNumber, RIGHT(PhoneNumber,4) AS Last4Digits
+FROM PersonDetails;
+
+--STR()
+--Problem 12--Convert numeric employee ID to string format.
+
+SELECT STR(PersonID,5) AS PersonID_String
+FROM PersonDetails;
+
+--REPLACE()
+--Problem 13 -Remove hyphens from phone numbers.
+
+SELECT PhoneNumber,
+       REPLACE(PhoneNumber, '-', '') AS CleanPhone
+FROM PersonDetails;
+
+--SPACE()
+--Problem 14-Add fixed spacing between name and department.
+
+SELECT FullName + SPACE(5) + Department AS AlignedOutput
+FROM PersonDetails;
+
+--SUBSTRING()
+--Problem 15--Extract email domain name.
+
+SELECT Email,
+       SUBSTRING(Email,
+                 CHARINDEX('@', Email)+1,
+                 LEN(Email)) AS DomainName
+FROM PersonDetails;
+
+Select CHARINDEX('@', Email) from PersonDetails;
+
+--TRIM()
+--Problem 16--Remove leading and trailing spaces from names.
+
+SELECT FullName, TRIM(FullName) AS CleanName
+FROM PersonDetails;
+
+--RTRIM()--Problem 17-Remove trailing spaces from emails.
+
+SELECT Email, RTRIM(Email) AS CleanEmail
+FROM PersonDetails;
