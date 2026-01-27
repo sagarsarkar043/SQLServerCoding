@@ -1,0 +1,88 @@
+--Type Casting Functions
+
+--Creating the Table
+
+CREATE TABLE RawSalesData (
+    RecordID INT IDENTITY(1,1) PRIMARY KEY,
+
+    EmployeeID VARCHAR(10),          -- numeric stored as text
+    EmployeeName VARCHAR(100),
+
+    OrderDate VARCHAR(20),            -- date stored as text
+    ShipDate VARCHAR(20),             -- date stored as text
+
+    Quantity VARCHAR(10),             -- numeric stored as text
+    UnitPrice VARCHAR(20),            -- decimal stored as text
+
+    Discount VARCHAR(10),             -- percentage stored as text
+    TotalAmount VARCHAR(30),          -- calculated amount stored as text
+
+    IsActive VARCHAR(5),              -- Y / N / 1 / 0
+    CreatedOn VARCHAR(30)             -- datetime stored as text
+);
+
+--Inserting the Data
+
+INSERT INTO RawSalesData
+(EmployeeID, EmployeeName, OrderDate, ShipDate, Quantity, UnitPrice,
+ Discount, TotalAmount, IsActive, CreatedOn)
+VALUES
+('101', 'John Doe',   '2025-01-10', '2025-01-12', '5',  '100.50', '10',  '452.25', 'Y', '2025-01-10 10:30'),
+('102', 'Mary Smith', '10/02/2025', '12/02/2025', '3',  '250',    '0',   '750',    '1', '2025-02-10 14:15'),
+('103', 'Rahul Kumar','2025.03.05', '2025.03.07', '2',  'abc',    '5',   '0',      'N', 'invalid_date'),
+('104', 'Anita Verma','2025-04-01', NULL,         '10', '75.25',  '5',   '714.88', '0', '2025-04-01 09:00'),
+('105', 'Amit Singh', '01-05-2025', '03-05-2025', '4',  '150.00', NULL,  '600',    'Y', '2025-05-01 16:45'),
+('106', 'Neha Gupta', '2025/06/15', '2025/06/17', 'two','200',    '10',  '0',      '1', '2025-06-15 11:10'),
+('107', 'Vikram Patel','2025-07-20','2025-07-22', '8',  '90.5',   '5',   '687.80', 'N', '2025-07-20 08:25');
+
+Select * from RawSalesData;
+
+--Explicit Conversions (CAST, CONVERT)
+--Convert OrderDate (VARCHAR → DATE)
+SELECT OrderDate,
+       CAST(OrderDate AS DATE) AS OrderDate_Date
+FROM RawSalesData;
+
+--Convert Quantity to INT
+SELECT Quantity,
+       CAST(Quantity AS INT) AS Qty_Int
+FROM RawSalesData;
+--Will fail for 'two' → good for error handling practice.
+
+
+--Convert CreatedOn to DATETIME
+
+SELECT CreatedOn,
+       CAST(CreatedOn AS DATETIME) AS CreatedOn_DateTime
+FROM RawSalesData;
+
+--Safe Explicit Conversions (TRY_CAST, TRY_CONVERT) ⭐
+--Avoid conversion failure
+SELECT UnitPrice,
+       TRY_CAST(UnitPrice AS DECIMAL(10,2)) AS SafePrice
+FROM RawSalesData;
+
+--Returns NULL instead of error.
+
+--C. Implicit Conversions
+--Implicit conversion during comparison
+SELECT *
+FROM RawSalesData
+WHERE Quantity > 5;
+
+Select * from RawSalesData;
+
+--SQL Server implicitly converts Quantity to INT.
+
+--Implicit conversion in arithmetic
+SELECT Quantity * UnitPrice AS Total
+FROM RawSalesData;
+
+
+--SQL Server tries to convert both to numeric.
+-- CAST vs CONVERT (Formatting)
+--Convert date to formatted string
+SELECT CONVERT(VARCHAR, GETDATE(), 103) AS DDMMYYYY;
+
+--Same using CAST (no format support)
+SELECT CAST(GETDATE() AS VARCHAR(20)) AS DateString;
