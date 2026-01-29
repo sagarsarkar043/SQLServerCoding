@@ -1,1 +1,144 @@
 
+--Q31--Find employees whose salary is greater than 
+--ALL salaries in the ‘HR’ department.
+
+SELECT *
+FROM Employees
+WHERE Salary > ALL
+(
+    SELECT Salary
+    FROM Employees
+    WHERE DeptID =
+          (SELECT DeptID
+           FROM Departments
+           WHERE DeptName = 'HR')
+);
+
+--Q32--Find departments that have at least one employee
+-- earning more than the company average salary.
+
+SELECT *
+FROM Departments d
+WHERE EXISTS
+(
+    SELECT 1
+    FROM Employees e
+    WHERE e.DeptID = d.DeptID
+      AND e.Salary >
+          (SELECT AVG(Salary) FROM Employees)
+);
+
+--Q33--Find employees who work in departments where the 
+--minimum salary is greater than 50,000.
+
+SELECT *
+FROM Employees
+WHERE DeptID IN
+(
+    SELECT DeptID
+    FROM Employees
+    GROUP BY DeptID
+    HAVING MIN(Salary) > 50000
+);
+
+--Q34--Find employees whose salary is equal to the 
+--second-highest salary in their department.
+
+SELECT *
+FROM Employees e
+WHERE Salary =
+(
+    SELECT MAX(Salary)
+    FROM Employees
+    WHERE DeptID = e.DeptID
+      AND Salary <
+          (
+              SELECT MAX(Salary)
+              FROM Employees
+              WHERE DeptID= e.DeptID
+          )
+);
+
+
+
+--Q35--Employees who are managers 
+
+SELECT * 
+FROM Employees 
+WHERE EmpID IN ( 
+    SELECT DISTINCT ManagerID 
+    FROM Employees 
+    WHERE ManagerID IS NOT NULL 
+); 
+
+--Q36--Departments with no employees 
+
+SELECT * 
+FROM Departments 
+WHERE DeptID NOT IN ( 
+    SELECT DISTINCT DeptID 
+    FROM Employees 
+); 
+ 
+--Q37--Employees earning more than ALL HR salaries 
+
+SELECT * 
+FROM Employees 
+WHERE Salary > ALL ( 
+    SELECT Salary 
+    FROM Employees 
+    WHERE DeptID = ( 
+        SELECT DeptID 
+        FROM Departments 
+        WHERE DeptName = 'HR' 
+    ) 
+); 
+ 
+
+--Q38--Find the second highest salary 
+
+SELECT MAX(Salary) AS SecondHighestSalary 
+FROM Employees 
+WHERE Salary < ( 
+    SELECT MAX(Salary) 
+    FROM Employees 
+); 
+
+--Q39--Employees hired before their manager 
+
+SELECT * 
+FROM Employees e 
+WHERE HireDate < ( 
+    SELECT HireDate 
+    FROM Employees 
+    WHERE EmpID = e.ManagerID 
+); 
+
+--Q40--Employees earning more than location-wise average salary 
+
+SELECT * 
+FROM Employees e 
+WHERE Salary > ( 
+    SELECT AVG(Salary) 
+    FROM Employees e2 
+    WHERE e2.DeptID IN ( 
+        SELECT DeptID 
+        FROM Departments 
+        WHERE Location = ( 
+            SELECT Location 
+            FROM Departments 
+            WHERE DeptID = e.DeptID 
+        ) 
+    ) 
+); 
+
+--Q41--Employees who don’t report to anyone but have subordinates 
+
+SELECT * 
+FROM Employees 
+WHERE ManagerID IS NULL 
+AND EmpID IN ( 
+    SELECT DISTINCT ManagerID 
+    FROM Employees 
+); 
+
