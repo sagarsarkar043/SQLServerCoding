@@ -1,0 +1,146 @@
+create database dbp1;
+
+use dbp1;
+
+-- Customers
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    CustomerName VARCHAR(50),
+    Region VARCHAR(50)
+);
+
+INSERT INTO Customers VALUES
+(1,'Alice','North'),
+(2,'Bob','South'),
+(3,'Charlie','East'),
+(4,'David','West');
+
+--------------------------------------------------
+
+-- Orders
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,
+    CustomerID INT,
+    OrderDate DATE,
+    Amount DECIMAL(10,2),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+INSERT INTO Orders VALUES
+(101,1,'2024-01-01',500),
+(102,2,'2024-01-02',700),
+(103,1,'2024-01-03',300),
+(104,3,'2024-01-04',900),
+(105,2,'2024-01-05',200),
+(106,1,'2024-01-06',400);
+
+--------------------------------------------------
+
+-- Employees
+CREATE TABLE Employees (
+    EmpID INT PRIMARY KEY,
+    EmpName VARCHAR(50),
+    Salary INT,
+    ManagerID INT NULL
+);
+
+INSERT INTO Employees VALUES
+(1,'John',8000,NULL),
+(2,'Jane',6000,1),
+(3,'Mark',7000,1),
+(4,'Luke',5000,2);
+
+--------------------------------------------------
+
+-- Sales (for time analysis)
+CREATE TABLE Sales (
+    SaleDate DATE,
+    Revenue INT
+);
+
+INSERT INTO Sales VALUES
+('2024-01-01',100),
+('2024-01-02',200),
+('2024-01-03',150),
+('2024-01-04',300);
+
+
+--1.Rank Customers by Total Revenue ( Window Function)
+--Problem--Rank customers based on total purchase amount.
+
+Select * from customers;
+Select * from Orders;
+
+
+Select Customers.CustomerID, SUM(Orders.Amount) as TotalRevenue , Rank () over(ORDER BY SUM(Orders.Amount) DESC) as Rank
+from Customers join Orders on Customers.CustomerID=Orders.CustomerID
+group by Customers.CustomerID;
+
+
+--2--Running Total of Revenue (Window Function)
+--Problem--Calculate cumulative revenue over time.
+
+
+Select * from Sales;
+
+
+Select Sales.SaleDate , SUM(Sales.Revenue) over(Order by Sales.SaleDate)as RunningTotal
+from Sales;
+
+
+--3-Second Highest Salary (Subquery)
+-- Problem--Find second highest salary from Employees.
+
+Select Max(Salary)  as SecondHighestSalary from Employees where Salary <(Select Max(Salary) from Employees);
+
+--4️ Employees Earning Above Average (Subquery)
+--Problem--Find employees earning more than average salary.
+
+Select * from Employees where Salary > (Select AVG(Salary) from Employees);
+
+
+--5--Remove Duplicate Orders (CTE + Window)
+--Problem--Assume duplicates exist, remove them.
+
+WITH CTE AS (
+    SELECT *,
+           ROW_NUMBER() OVER (PARTITION BY CustomerID, Amount ORDER BY OrderID) AS rn
+    FROM Orders
+)
+DELETE FROM CTE WHERE rn > 1;
+
+
+--6-LEFT JOIN (Customers without Orders)
+-- Problem--Show all customers even if they have no orders.
+
+
+Select Customers.CustomerID,Orders.OrderID from 
+Customers left join Orders on
+Customers.CustomerID= Orders.CustomerID
+where OrderID is NULL;
+
+
+--7--Self Join (Employee → Manager)
+--Problem--Show employees and their managers.
+
+
+Select e1.EmpName,e2.EmpName from Employees e1 left join Employees e2 
+on e1.ManagerID=e2.EmpID;
+
+
+--8--Index Optimization
+--Problem--Improve performance of customer-based queries.
+
+
+CREATE INDEX idx_customer ON Orders(CustomerID);
+
+-- Optimized query
+SELECT * FROM Orders WHERE CustomerID = 1;
+
+--9--Top 2 Orders per Customer (Window Function)
+--Problem-- Find top 2 highest orders per customer.
+
+
+Select * from (Select * ,Rank () over( partition by CustomerID order by Orders.Amount desc) as r
+from Orders) t
+where r<=2;
